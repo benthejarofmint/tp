@@ -42,9 +42,15 @@ public class Parser {
             double amount = parseAmount(remainder);
             String description = parseDescription(remainder);
             LocalDate date = parseDate(remainder, ui);
-            Expense expense = new Expense(category, amount, description, date);
-            list.add(expense);
-            ui.showMessage("Added: " + expense);
+            if (category.equalsIgnoreCase("income")) {
+                Income income = new Income(category, amount, description, date);
+                list.add(income);
+                ui.showMessage("Added Income: " + income);
+            } else {
+                Expense expense = new Expense(category, amount, description, date);
+                list.add(expense);
+                ui.showMessage("Added Expense: " + expense);
+            }
         } catch (NumberFormatException e) {
             ui.showMessage("Invalid price.");
         }
