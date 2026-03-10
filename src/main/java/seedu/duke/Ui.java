@@ -14,12 +14,14 @@ public class Ui {
 
     public void showHelp() {
         System.out.println("Listing all current transactions: `list`");
-        System.out.println("Adding an expense: `add [category]/PRICE`\n" +
-                " - Category can be any user-initiated category for now.");
-        System.out.println("Adding an expense: `add income/PRICE`\n");
-        System.out.println("Deleting an expense or income:`delete [ENTRY INDEX]`");
-        System.out.println("Summary of all expenses or incomes: `summary [category]\n`" +
-                " - Category include: `all`, `expense`, `outflow`");
+        System.out.println("Adding an expense: `add [category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`\n"
+                + " - desc/ and d/ are optional.\n"
+                + " - Date defaults to today if omitted.\n"
+                + " - Example: add food/10 desc/lunch d/2025-03-01");
+        System.out.println("Adding an income: `add income/PRICE`");
+        System.out.println("Deleting an expense or income: `delete [ENTRY INDEX]`");
+        System.out.println("Summary of all expenses or incomes: `summary [category]`\n"
+                + " - Category includes: `all`, `expense`, `outflow`");
         System.out.println("Exiting the program: `exit`");
     }
 
@@ -30,5 +32,17 @@ public class Ui {
 
     public void showMessage(String message) {
         System.out.println(message);
+    }
+
+    public void showOverallSummary(double income, double expense) {
+        System.out.println("----- Overall Summary -----");
+        System.out.printf("Total Income: $%.2f%n", income);
+        System.out.printf("Total Expense: $%.2f%n", expense);
+        System.out.printf("Net Balance: $%.2f%n", (income - expense));
+        System.out.println("--------------------------");
+    }
+
+    public void showCategorySummary(String category, double categoryTotal) {
+        System.out.printf("Total for %s: $%.2f%n", category, categoryTotal);
     }
 }
