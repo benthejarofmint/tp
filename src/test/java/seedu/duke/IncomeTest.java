@@ -32,7 +32,7 @@ public class IncomeTest {
     }
     
     @Test
-    public void parseAddCommand_incomeCategory_addsIncomeObject() {
+    public void parseAddCommand_incomeCategory_addsIncomeObject() throws MoneyBagProMaxException {
         TransactionList list = new TransactionList();
         Ui ui = new Ui();
         Parser parser = new Parser();
@@ -49,7 +49,7 @@ public class IncomeTest {
     }
 
     @Test
-    public void parseSummaryCommand_onlyIncome_printsCorrectTotals() {
+    public void parseSummaryCommand_onlyIncome_printsCorrectTotals() throws MoneyBagProMaxException {
         TransactionList list = new TransactionList();
         Ui ui = new Ui();
         Parser parser = new Parser();

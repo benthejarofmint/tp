@@ -37,7 +37,7 @@ class ParserTest {
     }
 
     @Test
-    public void parseSummaryCommand_summary_printsCorrectTotals() {
+    public void parseSummaryCommand_summary_printsCorrectTotals() throws MoneyBagProMaxException {
         TransactionList list = new TransactionList();
         Ui ui = new Ui();
         Parser parser = new Parser();
@@ -59,7 +59,7 @@ class ParserTest {
     }
 
     @Test
-    public void parseSummaryCommand_emptyList_printsNoTransactionsMessage() {
+    public void parseSummaryCommand_emptyList_printsNoTransactionsMessage() throws MoneyBagProMaxException {
         TransactionList emptyList = new TransactionList();
         Ui ui = new Ui();
         Parser parser = new Parser();
@@ -71,7 +71,7 @@ class ParserTest {
     }
 
     @Test
-    public void parseFindCommand_keyword_printsMatchingTransactions() {
+    public void parseFindCommand_keyword_printsMatchingTransactions() throws MoneyBagProMaxException {
         TransactionList list = new TransactionList();
         Ui ui = new Ui();
         Parser parser = new Parser();
@@ -90,7 +90,7 @@ class ParserTest {
     }
 
     @Test
-    public void parseFindCommand_nonExistingKeyword_printsNoMatch() {
+    public void parseFindCommand_nonExistingKeyword_printsNoMatch() throws MoneyBagProMaxException {
 
         TransactionList list = new TransactionList();
         Ui ui = new Ui();
