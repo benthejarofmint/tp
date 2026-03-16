@@ -15,13 +15,17 @@ public class MoneyBagProMax {
         Ui ui = new Ui();
 
         ui.showWelcomeMessage();
+        boolean isExit = false;
 
-        while (true) {
+        while (!isExit) {
             String input = ui.readInput();
-            if (input.equals("exit") || input.equals("q")) {
-                break;
+            try {
+                Command command = parser.parse(input, list, ui);
+                command.execute(list, ui);
+                isExit = command.isExit();
+            } catch (MoneyBagProMaxException e) {
+                ui.showMessage(e.getMessage());
             }
-            parser.parse(input, list, ui);
         }
     }
 }
