@@ -3,7 +3,9 @@ package seedu.duke.transactionlist;
 import org.junit.jupiter.api.Test;
 import seedu.duke.transaction.Expense;
 import seedu.duke.transaction.Transaction;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TransactionListTest {
 
