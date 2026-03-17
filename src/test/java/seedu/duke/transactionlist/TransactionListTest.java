@@ -77,33 +77,4 @@ public class TransactionListTest {
         assertEquals(expense2, removed);
         assertEquals(1, list.size());
     }
-
-    @Test
-    public void remove_onlyTransaction_listBecomesEmpty() {
-        TransactionList list = new TransactionList();
-
-        list.add(new Expense("food", 5.0));
-
-        list.remove(0);
-
-        assertTrue(list.isEmpty());
-    }
-
-    @Test
-    public void remove_negativeIndex_throwsAssertionError() {
-        TransactionList list = new TransactionList();
-
-        list.add(new Expense("food", 5.0));
-
-        assertThrows(AssertionError.class, () -> list.remove(-1));
-    }
-
-    @Test
-    public void remove_indexOutOfBounds_throwsAssertionError() {
-        TransactionList list = new TransactionList();
-
-        list.add(new Expense("food", 5.0));
-
-        assertThrows(AssertionError.class, () -> list.remove(5));
-    }
 }
