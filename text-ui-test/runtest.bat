@@ -29,6 +29,8 @@ if errorlevel 1 (
     echo [FAIL] Application crashed during run -- check input.txt and output above
     exit /b 1
 )
+
+powershell -NoProfile -Command "(Get-Content ACTUAL.TXT -Raw) -replace '\x1b\[[0-9;]*[a-zA-Z]', '' | Set-Content ACTUAL.TXT"
 echo [PASS] Application run
 
 :: ── step 4: resolve date placeholder ─────────────────────────────────────────
