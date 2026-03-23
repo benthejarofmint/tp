@@ -32,6 +32,7 @@ public class DeleteCommand extends Command {
         ui.showMessage("Deleted: " + removed);
     }
 
+    /** @return boolean — always true, this command modifies the transaction list. */
     @Override
     public boolean isMutating() {
         return true;
