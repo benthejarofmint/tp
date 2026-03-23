@@ -19,7 +19,7 @@ import java.util.Deque;
 public class UndoRedoManager {
 
     public enum ActionType {
-        ADD, DELETE
+        ADD, DELETE, EDIT
     }
 
     /**
@@ -28,12 +28,18 @@ public class UndoRedoManager {
     public static class ActionPair {
         private final ActionType type;
         private final Transaction transaction;
+        private final Transaction oldTransaction;
         private final int index;
 
-        public ActionPair(ActionType type, Transaction transaction, int index) {
+        public ActionPair(ActionType type, Transaction transaction, Transaction oldTransaction, int index) {
             this.type = type;
             this.transaction = transaction;
+            this.oldTransaction = oldTransaction;
             this.index = index;
+        }
+        
+        public ActionPair(ActionType type, Transaction transaction, int index) {
+            this(type, transaction, null, index);
         }
 
         public ActionType getType() {
@@ -43,10 +49,20 @@ public class UndoRedoManager {
         public Transaction getTransaction() {
             return transaction;
         }
+        
+        public Transaction getOldTransaction() { return oldTransaction; }
 
         public int getIndex() {
             return index;
         }
+    }
+
+    public void recordEdit(Transaction oldTransaction, Transaction newTransaction, int index) {
+        assert oldTransaction != null : "Old transaction should not be null";
+        assert newTransaction != null : "New transaction should not be null";
+        assert index >= 0 : "Index should not be negative";
+        undoStack.push(new ActionPair(ActionType.EDIT, newTransaction, oldTransaction, index));
+        redoStack.clear();
     }
 
     private final Deque<ActionPair> undoStack = new ArrayDeque<>();
