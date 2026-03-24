@@ -14,6 +14,8 @@ import seedu.duke.command.SortCommand;
 import seedu.duke.command.UndoCommand;
 import seedu.duke.command.EditCommand;
 import seedu.duke.undoredo.UndoRedoManager;
+import seedu.duke.command.BudgetCommand;
+import seedu.duke.command.StatsCommand;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -63,6 +65,10 @@ public class Parser {
                 throw new MoneyBagProMaxException("Please provide a keyword to search for.");
             }
             return new FindCommand(arguments);
+        case "budget":
+            return parseBudgetCommand(arguments);
+        case "stats":
+            return new StatsCommand();
         case "sort":
             return parseSortCommand(arguments);
         case "undo":
@@ -200,7 +206,33 @@ public class Parser {
         }
         return new SortCommand(sortBy);
     }
-    
+
+    private Command parseBudgetCommand(String args) throws MoneyBagProMaxException {
+        if (args.isEmpty()) {
+            return new BudgetCommand("status", 0);
+        }
+        String[] parts = args.split(" ", 2);
+        String action = parts[0].trim().toLowerCase();
+        if (action.equals("set")) {
+            if (parts.length < 2) {
+                throw new MoneyBagProMaxException("Usage: budget set AMOUNT");
+            }
+            try {
+                double amount = Double.parseDouble(parts[1].trim());
+                if (amount < 0) {
+                    throw new MoneyBagProMaxException("Budget cannot be negative.");
+                }
+                return new BudgetCommand("set", amount);
+            } catch (NumberFormatException e) {
+                throw new MoneyBagProMaxException("Invalid budget amount.");
+            }
+        }
+        if (action.equals("status")) {
+            return new BudgetCommand("status", 0);
+        }
+        throw new MoneyBagProMaxException("Unknown budget command.");
+    }
+  
     private Command parseEditCommand(String args) throws MoneyBagProMaxException {
         String[] parts = args.split(" ", 2);
         if (parts.length < 2) {

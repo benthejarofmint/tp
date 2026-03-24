@@ -1,6 +1,7 @@
 package seedu.duke.command;
 
 import seedu.duke.MoneyBagProMaxException;
+import seedu.duke.budget.Budget;
 import seedu.duke.transaction.Expense;
 import seedu.duke.transaction.Transaction;
 import seedu.duke.transactionlist.TransactionList;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class EditCommandTest {
 
     private TransactionList list;
+    private final Budget budget = new Budget();
     private UndoRedoManager undoRedoManager;
     private Ui ui;
     private final LocalDate testDate = LocalDate.of(2026, 3, 20);
@@ -33,7 +35,7 @@ class EditCommandTest {
 
     @Test
     void execute_validEdit_replacesTransactionAtIndex() throws MoneyBagProMaxException {
-        new EditCommand(1, "medical", 50.00, "checkup", testDate, undoRedoManager).execute(list, ui);
+        new EditCommand(1, "medical", 50.00, "checkup", testDate, undoRedoManager).execute(list, budget, ui);
 
         Transaction result = list.get(0);
         assertEquals("medical", result.getCategory());
@@ -44,30 +46,30 @@ class EditCommandTest {
     @Test
     void execute_validEdit_doesNotAffectOtherTransactions() throws MoneyBagProMaxException {
         Transaction originalSecond = list.get(1);
-        new EditCommand(1, "medical", 50.00, "checkup", testDate, undoRedoManager).execute(list, ui);
+        new EditCommand(1, "medical", 50.00, "checkup", testDate, undoRedoManager).execute(list, budget, ui);
         assertEquals(originalSecond, list.get(1));
     }
 
     @Test
     void execute_thenUndo_restoresOriginalTransaction() throws MoneyBagProMaxException {
         Transaction original = list.get(0);
-        new EditCommand(1, "medical", 50.00, "checkup", testDate, undoRedoManager).execute(list, ui);
-        new UndoCommand(undoRedoManager).execute(list, ui);
+        new EditCommand(1, "medical", 50.00, "checkup", testDate, undoRedoManager).execute(list, budget, ui);
+        new UndoCommand(undoRedoManager).execute(list, budget, ui);
         assertEquals(original, list.get(0));
     }
 
     @Test
     void execute_thenUndoThenRedo_reappliesEdit() throws MoneyBagProMaxException {
-        new EditCommand(1, "medical", 50.00, "checkup", testDate, undoRedoManager).execute(list, ui);
+        new EditCommand(1, "medical", 50.00, "checkup", testDate, undoRedoManager).execute(list, budget, ui);
         Transaction edited = list.get(0);
-        new UndoCommand(undoRedoManager).execute(list, ui);
-        new RedoCommand(undoRedoManager).execute(list, ui);
+        new UndoCommand(undoRedoManager).execute(list, budget, ui);
+        new RedoCommand(undoRedoManager).execute(list, budget, ui);
         assertEquals(edited, list.get(0));
     }
 
     @Test
     void execute_outOfBoundsIndex_throwsException() {
         assertThrows(MoneyBagProMaxException.class,
-                () -> new EditCommand(99, "food", 10.00, "", testDate, undoRedoManager).execute(list, ui));
+                () -> new EditCommand(99, "food", 10.00, "", testDate, undoRedoManager).execute(list, budget, ui));
     }
 }
