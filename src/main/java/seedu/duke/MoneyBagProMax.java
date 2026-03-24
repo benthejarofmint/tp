@@ -40,7 +40,7 @@ public class MoneyBagProMax {
             try {
                 Command command = parser.parse(input);
                 assert command != null : "Parser returned null command for input: " + input;
-                command.execute(list, ui);
+                command.execute(list, budget, ui);
                 if (command.isMutating()) {
                     storage.save(list);
                 }
