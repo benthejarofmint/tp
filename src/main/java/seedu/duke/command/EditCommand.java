@@ -1,6 +1,7 @@
 package seedu.duke.command;
 
 import seedu.duke.MoneyBagProMaxException;
+import seedu.duke.budget.Budget;
 import seedu.duke.transaction.Expense;
 import seedu.duke.transaction.Income;
 import seedu.duke.transaction.Transaction;
@@ -36,7 +37,7 @@ public class EditCommand extends Command {
     }
 
     @Override
-    public void execute(TransactionList list, Ui ui) throws MoneyBagProMaxException {
+    public void execute(TransactionList list, Budget budget, Ui ui) throws MoneyBagProMaxException {
         int listIndex = targetIndex - 1;
 
         if (listIndex < 0 || listIndex >= list.size()) {
