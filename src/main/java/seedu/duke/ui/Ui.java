@@ -78,7 +78,9 @@ public class Ui {
                                  - Includes highest and lowest transaction, most frequent category,
                                    average spending per category, and spending trend.
                                  - Example: stats
-                13. Exit       : `exit`
+                13. Filter     : `filter [from/YYYY-MM-DD] [to/YYYY-MM-DD]`
+                                 - Filters your transactions based on the time frame given
+                14. Exit       : `exit`
                                  - Exits the program.
                 %s""".formatted(separator, separator, separator);
 
