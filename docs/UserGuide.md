@@ -40,7 +40,7 @@ respective system [here](https://www.oracle.com/java/technologies/javase/jdk17-a
 5. Use the `cd` command to navigate to the folder where your JAR file is saved. For example:\
    `cd /Users/{yourName}/Desktop/downloads/`
 6. Run the application in the command line using the following command:\
-   `java -jar expense-tracker.jar`
+   `java -jar MoneyBagProMax.jar`
 7. After a few seconds, the application will launch in your terminal.
 8. Type the commands into the terminal and press **Enter** to execute the command.
 
@@ -245,7 +245,7 @@ Filters and displays only the transactions that fall within a specified date ran
 - `filter from/2026-01-01 to/2026-03-31` Displays all transactions from 1st January 2026 to 31st March 2026.
 
 > [!NOTE]
-> Both `from/` and `to/` are optional. You may provide just one to filter from or up to a specific date.
+> Both `from/` and `to/` are compulsory.
 
 ---
 
