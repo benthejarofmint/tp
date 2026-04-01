@@ -82,6 +82,7 @@ public class SummaryCommand extends Command {
         switch (summaryType) {
         case "all":
             ui.showOverallSummary(totalIncome, totalExpense);
+            break;
         case "month":
             ui.showMonthlySummary(totalIncome, totalExpense);
             break;
