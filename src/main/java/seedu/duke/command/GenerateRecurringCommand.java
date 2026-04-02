@@ -28,6 +28,7 @@ public class GenerateRecurringCommand extends Command {
         for (int i = 0; i < recurringList.size(); i++) {
             RecurringTransaction rt = recurringList.get(i);
             LocalDate nextDate = getNextDate(rt);
+            int templateCount = 0;
 
             while (!nextDate.isAfter(today)) {
                 Transaction t = createTransaction(rt, nextDate);
@@ -36,10 +37,14 @@ public class GenerateRecurringCommand extends Command {
                     break;
                 }
                 list.add(t);
-                ui.showMessage("Generated: " + t);
-                generatedCount++;
+                templateCount++;
                 rt.setLastGeneratedDate(nextDate);
                 nextDate = rt.getFrequency().next(nextDate);
+            }
+
+            if (templateCount > 0) {
+                generatedCount += templateCount;
+                ui.showMessage("Generated " + templateCount + " transaction(s) from: " + rt);
             }
         }
 
