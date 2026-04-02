@@ -2,23 +2,30 @@ package seedu.duke.parser;
 
 import seedu.duke.MoneyBagProMaxException;
 import seedu.duke.command.AddCommand;
+import seedu.duke.command.AddRecurringCommand;
 import seedu.duke.command.Command;
 import seedu.duke.command.DeleteCommand;
+import seedu.duke.command.DeleteRecurringCommand;
 import seedu.duke.command.ExitCommand;
-import seedu.duke.command.ListCommand;
-import seedu.duke.command.RedoCommand;
-import seedu.duke.command.SummaryCommand;
-import seedu.duke.command.HelpCommand;
-import seedu.duke.command.FindCommand;
-import seedu.duke.command.SortCommand;
-import seedu.duke.command.UndoCommand;
-import seedu.duke.command.EditCommand;
-import seedu.duke.undoredo.UndoRedoManager;
-import seedu.duke.command.BudgetCommand;
-import seedu.duke.command.StatsCommand;
-import seedu.duke.command.FilterCommand;
 import seedu.duke.command.ExportCsvCommand;
 import seedu.duke.command.ExportTxtCommand;
+import seedu.duke.command.CategoryCommand;
+import seedu.duke.command.FilterCommand;
+import seedu.duke.command.FindCommand;
+import seedu.duke.command.GenerateRecurringCommand;
+import seedu.duke.command.HelpCommand;
+import seedu.duke.command.ListCommand;
+import seedu.duke.command.ListRecurringCommand;
+import seedu.duke.command.RedoCommand;
+import seedu.duke.command.SortCommand;
+import seedu.duke.command.SummaryCommand;
+import seedu.duke.command.UndoCommand;
+import seedu.duke.command.EditCommand;
+import seedu.duke.command.BudgetCommand;
+import seedu.duke.command.StatsCommand;
+import seedu.duke.transaction.Frequency;
+import seedu.duke.transactionlist.RecurringTransactionList;
+import seedu.duke.undoredo.UndoRedoManager;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -26,10 +33,13 @@ import java.time.format.DateTimeParseException;
 public class Parser {
 
     private final UndoRedoManager undoRedoManager;
+    private final RecurringTransactionList recurringList;
 
-    public Parser(UndoRedoManager undoRedoManager) {
+    public Parser(UndoRedoManager undoRedoManager, RecurringTransactionList recurringList) {
         assert undoRedoManager != null : "UndoRedoManager should not be null";
+        assert recurringList != null : "RecurringTransactionList should not be null";
         this.undoRedoManager = undoRedoManager;
+        this.recurringList = recurringList;
     }
 
     /**
@@ -79,6 +89,12 @@ public class Parser {
             return new RedoCommand(undoRedoManager);
         case "edit":
             return parseEditCommand(arguments);
+        case "list-rec":
+            return new ListRecurringCommand(recurringList);
+        case "delete-rec":
+            return parseDeleteRecurringCommand(arguments);
+        case "gen-rec":
+            return new GenerateRecurringCommand(recurringList);
         case "filter":
             if (arguments.isEmpty()) {
                 throw new MoneyBagProMaxException("Invalid format. Use: filter from/YYYY-MM-DD to/YYYY-MM-DD");
@@ -94,12 +110,15 @@ public class Parser {
                 throw new MoneyBagProMaxException("Usage: export-data FILEPATH");
             }
             return new ExportTxtCommand(arguments);
+        case "category":
+            return parseCategoryCommand(arguments);
         default:
             throw new MoneyBagProMaxException("Unknown command. Type `help` to see the list of available commands.");
         }
     }
 
     private Command parseAddCommand(String args) throws MoneyBagProMaxException {
+        
         String[] parts = args.split("/", 2);
         if (parts.length < 2) {
             throw new MoneyBagProMaxException("Invalid, try: add [category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]");
@@ -112,11 +131,21 @@ public class Parser {
             assert !category.isEmpty() : "Category is blank after trimming in input: " + args;
             assert !remainder.isEmpty() : "Remainder after category slash is empty in input: " + args;
 
+            if (remainder.contains(" rec/")) {
+                Frequency frequency = parseFrequency(remainder);
+                String cleanRemainder = remainder.replaceFirst(" rec/\\S+", "").trim();
+                double amount = parseAmount(cleanRemainder);
+                String description = parseDescription(cleanRemainder);
+                LocalDate date = parseDate(cleanRemainder);
+                return new AddRecurringCommand(category, amount, description, frequency, date, recurringList);
+            }
+
             double amount = parseAmount(remainder);
             String description = parseDescription(remainder);
             LocalDate date = parseDate(remainder);
-
-            assert amount > 0 : "Parsed amount is not positive: " + amount;
+            if (amount <= 0) {
+                throw new MoneyBagProMaxException("Amount must be positive.");
+            }
             assert Double.isFinite(amount) : "Parsed amount is infinite or NaN: " + amount;
             assert !date.isBefore(LocalDate.of(1900, 1, 1)) :
                     "Parsed date is before year 1900, likely a typo: " + date;
@@ -275,11 +304,42 @@ public class Parser {
             String category = categoryAndRest[0].trim();
             String valueRemainder = categoryAndRest[1].trim();
             double amount = parseAmount(valueRemainder);
+            if (amount <= 0) {
+                throw new MoneyBagProMaxException("Amount must be positive.");
+            }
             String description = parseDescription(valueRemainder);
             LocalDate date = parseDate(valueRemainder);
             return new EditCommand(index, category, amount, description, date, undoRedoManager);
         } catch (NumberFormatException e) {
             throw new MoneyBagProMaxException("Invalid price.");
+        }
+    }
+
+    /**
+     * Extracts the frequency from the add command remainder string.
+     *
+     * @param remainder The portion of input after the first slash, e.g. "10 rec/weekly".
+     * @return The parsed Frequency.
+     * @throws MoneyBagProMaxException if rec/ is absent or the frequency value is invalid.
+     */
+    private Frequency parseFrequency(String remainder) throws MoneyBagProMaxException {
+        int recStart = remainder.indexOf(" rec/") + " rec/".length();
+        String freqToken = remainder.substring(recStart).trim().split(" ")[0];
+        if (freqToken.isBlank()) {
+            throw new MoneyBagProMaxException("rec/ must be followed by a frequency: daily, weekly, or monthly.");
+        }
+        return Frequency.fromString(freqToken);
+    }
+
+    private Command parseDeleteRecurringCommand(String indexText) throws MoneyBagProMaxException {
+        if (indexText.isEmpty()) {
+            throw new MoneyBagProMaxException("Invalid format: try: delete-rec [INDEX]");
+        }
+        try {
+            int index = Integer.parseInt(indexText);
+            return new DeleteRecurringCommand(index, recurringList);
+        } catch (NumberFormatException e) {
+            throw new MoneyBagProMaxException("Invalid, try: delete-rec INDEX");
         }
     }
 
@@ -336,5 +396,38 @@ public class Parser {
             return new SummaryCommand("month", datePart);
         }
         return new SummaryCommand(arguments);
+    }
+
+    private Command parseCategoryCommand(String args) throws MoneyBagProMaxException {
+        if (args.equals("list")) {
+            return new CategoryCommand("list", "");
+        }
+        if (args.startsWith("add/")) {
+            String name = args.substring("add/".length()).trim().toLowerCase();
+            if (name.isEmpty()) {
+                throw new MoneyBagProMaxException("Usage: category add/NAME");
+            }
+            if (!name.matches("[a-z0-9_-]+")) {
+                throw new MoneyBagProMaxException(
+                        "Category name must only contain letters, digits, hyphens, or underscores.");
+            }
+            return new CategoryCommand("add", name);
+        }
+        if (args.startsWith("remove/")) {
+            String name = args.substring("remove/".length()).trim().toLowerCase();
+            if (name.isEmpty()) {
+                throw new MoneyBagProMaxException("Usage: category remove/NAME");
+            }
+            if (!name.matches("[a-z0-9_-]+")) {
+                throw new MoneyBagProMaxException(
+                        "Category name must only contain letters, digits, hyphens, or underscores.");
+            }
+            return new CategoryCommand("remove", name);
+        }
+        throw new MoneyBagProMaxException(
+                "Invalid category command. Usage:\n"
+                        + "  category add/NAME\n"
+                        + "  category remove/NAME\n"
+                        + "  category list");
     }
 }
