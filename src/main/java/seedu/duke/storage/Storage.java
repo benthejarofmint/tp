@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -28,6 +30,11 @@ import java.util.Map;
  * Reads and writes transactions to {@code data/transactions.txt}.
  */
 public class Storage {
+
+    private static final Logger logger = Logger.getLogger(Storage.class.getName());
+    static {
+        logger.setLevel(Level.WARNING);
+    }
 
     private static final String DATA_DIR = "data";
     private static final String DATA_FILE = "data/transactions.txt";
@@ -100,7 +107,7 @@ public class Storage {
             }
             Map<String, String> f = parseLine(line);
             if (f == null) {
-                System.out.println("[WARN] Skipping malformed line (could not parse): " + line);
+                logger.warning("Skipping malformed line (could not parse): " + line);
                 continue;
             }
             try {
@@ -109,7 +116,7 @@ public class Storage {
                     list.add(t);
                 }
             } catch (CorruptedEntryException e) {
-                System.out.println("[WARN] Skipping corrupted entry: " + e.getMessage());
+                logger.warning("Skipping corrupted entry: " + e.getMessage());
             }
         }
     }
@@ -354,13 +361,13 @@ public class Storage {
                             || Expense.VALID_CATEGORIES.contains(category.toLowerCase())
                             || CategoryManager.getInstance().getCustomCategories().contains(category.toLowerCase());
                     if (!knownCategory) {
-                        System.out.println("[WARN] Skipping recurring line with invalid category '"
+                        logger.warning("Skipping recurring line with invalid category '"
                                 + category + "': " + line);
                         continue;
                     }
                     double amount      = Double.parseDouble(amountStr);
                     if (amount <= 0) {
-                        System.out.println("[WARN] Skipping recurring line with non-positive amount: " + line);
+                        logger.warning("Skipping recurring line with non-positive amount: " + line);
                         continue;
                     }
                     Frequency freq     = Frequency.fromString(freqStr);
@@ -371,7 +378,7 @@ public class Storage {
                     }
                     list.add(rt);
                 } catch (Exception e) {
-                    System.out.println("[WARN] Skipping malformed recurring line '" + line + "': " + e.getMessage());
+                    logger.warning("Skipping malformed recurring line '" + line + "': " + e.getMessage());
                 }
             }
         } catch (IOException e) {

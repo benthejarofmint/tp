@@ -96,20 +96,13 @@ class GenerateRecurringCommandTest {
     }
 
     @Test
-    public void execute_emptyRecurringList_showsNoDueMessage() {
+    public void execute_emptyRecurringList_generatesNothing() {
         RecurringTransactionList recurringList = new RecurringTransactionList();
         TransactionList list = new TransactionList();
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PrintStream original = System.out;
-        System.setOut(new PrintStream(out));
-        try {
-            new GenerateRecurringCommand(recurringList).execute(list, budget, new Ui());
-        } finally {
-            System.setOut(original);
-        }
+        new GenerateRecurringCommand(recurringList).execute(list, budget, new Ui());
 
-        assertTrue(out.toString().contains("No recurring transactions are due"));
+        assertEquals(0, list.size());
     }
 
     @Test

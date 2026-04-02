@@ -320,6 +320,9 @@ public class Parser {
     private Frequency parseFrequency(String remainder) throws MoneyBagProMaxException {
         int recStart = remainder.indexOf(" rec/") + " rec/".length();
         String freqToken = remainder.substring(recStart).trim().split(" ")[0];
+        if (freqToken.isBlank()) {
+            throw new MoneyBagProMaxException("rec/ must be followed by a frequency: daily, weekly, or monthly.");
+        }
         return Frequency.fromString(freqToken);
     }
 

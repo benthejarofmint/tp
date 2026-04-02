@@ -43,7 +43,7 @@ public class GenerateRecurringCommand extends Command {
             }
         }
 
-        if (generatedCount == 0) {
+        if (generatedCount == 0 && !recurringList.isEmpty()) {
             ui.showMessage("No recurring transactions are due.");
         }
     }
