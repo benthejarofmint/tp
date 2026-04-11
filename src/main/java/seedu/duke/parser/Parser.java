@@ -51,7 +51,7 @@ public class Parser {
         if (input == null || input.trim().isEmpty()) {
             throw new MoneyBagProMaxException("Please enter a command.");
         }
-
+        input = input.trim().replaceAll(" +", " ");
         String[] parts = input.split(" ", 2);
         assert parts.length >= 1 && parts.length <= 2 : "split produced unexpected part count: " + parts.length;
         String command = parts[0].toLowerCase();
@@ -84,8 +84,14 @@ public class Parser {
         case "sort":
             return parseSortCommand(arguments);
         case "undo":
+            if (!arguments.isEmpty()) {
+                throw new MoneyBagProMaxException("undo does not take any arguments.");
+            }
             return new UndoCommand(undoRedoManager);
         case "redo":
+            if (!arguments.isEmpty()) {
+                throw new MoneyBagProMaxException("redo does not take any arguments.");
+            }
             return new RedoCommand(undoRedoManager);
         case "edit":
             return parseEditCommand(arguments);
