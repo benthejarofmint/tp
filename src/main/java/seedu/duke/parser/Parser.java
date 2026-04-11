@@ -51,7 +51,7 @@ public class Parser {
         if (input == null || input.trim().isEmpty()) {
             throw new MoneyBagProMaxException("Please enter a command.");
         }
-
+        input = input.trim().replaceAll(" +", " ");
         String[] parts = input.split(" ", 2);
         assert parts.length >= 1 && parts.length <= 2 : "split produced unexpected part count: " + parts.length;
         String command = parts[0].toLowerCase();
@@ -84,8 +84,14 @@ public class Parser {
         case "sort":
             return parseSortCommand(arguments);
         case "undo":
+            if (!arguments.isEmpty()) {
+                throw new MoneyBagProMaxException("undo does not take any arguments.");
+            }
             return new UndoCommand(undoRedoManager);
         case "redo":
+            if (!arguments.isEmpty()) {
+                throw new MoneyBagProMaxException("redo does not take any arguments.");
+            }
             return new RedoCommand(undoRedoManager);
         case "edit":
             return parseEditCommand(arguments);
@@ -265,8 +271,8 @@ public class Parser {
             }
             try {
                 double amount = Double.parseDouble(parts[1].trim());
-                if (amount < 0) {
-                    throw new MoneyBagProMaxException("Budget cannot be negative.");
+                if (amount <= 0) {
+                    throw new MoneyBagProMaxException("Budget must be greater than 0.");
                 }
                 return new BudgetCommand("set", amount);
             } catch (NumberFormatException e) {
