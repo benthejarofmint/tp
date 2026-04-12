@@ -399,6 +399,8 @@ Then, copy all three data files from your previous computer into the `data/` fol
 - `data/transactions.txt` — your recorded income and expense entries
 - `data/categories.txt` — your custom expense categories
 - `data/recurring.txt` — your recurring transaction templates
+> [NOTE]
+> All three files must be transferred together. Copying only `transactions.txt` will cause custom categories and recurring templates to be lost on the new device.
 
 ---
 
