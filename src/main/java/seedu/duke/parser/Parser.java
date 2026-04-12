@@ -451,7 +451,7 @@ public class Parser {
 
     private Command parseCategoryCommand(String args) throws MoneyBagProMaxException {
         if (args.equals("list")) {
-            return new CategoryCommand("list", "");
+            return new CategoryCommand("list", "", recurringList);
         }
         if (args.startsWith("add/")) {
             String name = args.substring("add/".length()).trim().toLowerCase();
@@ -462,7 +462,7 @@ public class Parser {
                 throw new MoneyBagProMaxException(
                         "Category name must only contain letters, digits, hyphens, or underscores.");
             }
-            return new CategoryCommand("add", name);
+            return new CategoryCommand("add", name, recurringList);
         }
         if (args.startsWith("remove/")) {
             String name = args.substring("remove/".length()).trim().toLowerCase();
@@ -473,7 +473,7 @@ public class Parser {
                 throw new MoneyBagProMaxException(
                         "Category name must only contain letters, digits, hyphens, or underscores.");
             }
-            return new CategoryCommand("remove", name);
+            return new CategoryCommand("remove", name, recurringList);
         }
         throw new MoneyBagProMaxException(
                 "Invalid category command. Usage:\n"
