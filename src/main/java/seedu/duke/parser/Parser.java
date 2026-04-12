@@ -126,6 +126,11 @@ public class Parser {
     }
 
     private Command parseAddCommand(String args) throws MoneyBagProMaxException {
+        if (args.startsWith("desc/") || args.startsWith("d/") || args.startsWith("rec/")) {
+            throw new MoneyBagProMaxException(
+                    "Invalid format — category/PRICE must come first. "
+                            + "Try: add [category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]");
+        }
         
         String[] parts = args.split("/", 2);
         if (parts.length < 2) {
@@ -153,9 +158,12 @@ public class Parser {
 
             double amount = parseAmount(remainder);
             String description = parseDescription(remainder);
+            if (remainder.contains(" desc/") && description.isEmpty()) {
+                throw new MoneyBagProMaxException("Description cannot be empty when 'desc/' is provided.");
+            }
             LocalDate date = parseDate(remainder);
-            if (amount < 0.01 || !Double.isFinite(amount)) {
-                throw new MoneyBagProMaxException("Amount must be a valid positive number.");
+            if (amount < 0.01 || !Double.isFinite(amount) || amount > 10000000) {
+                throw new MoneyBagProMaxException("Amount must be between $0.01 and $10,000,000.");
             }
             assert !date.isBefore(LocalDate.of(1900, 1, 1)) :
                     "Parsed date is before year 1900, likely a typo: " + date;
@@ -237,7 +245,7 @@ public class Parser {
         try {
             return LocalDate.parse(dateToken);
         } catch (DateTimeParseException e) {
-            throw new MoneyBagProMaxException("Invalid date format — expected yyyy-MM-dd. Using today's date.");
+            throw new MoneyBagProMaxException("Invalid date format — expected yyyy-MM-dd. Transaction not added.");
         }
     }
 
@@ -318,10 +326,13 @@ public class Parser {
                 throw new MoneyBagProMaxException("Invalid category '" + category + "'.");
             }
             double amount = parseAmount(valueRemainder);
-            if (amount < 0.01 || !Double.isFinite(amount)) {
-                throw new MoneyBagProMaxException("Amount must be positive.");
+            if (amount < 0.01 || !Double.isFinite(amount) || amount>10000000) {
+                throw new MoneyBagProMaxException("Amount must be between $0.01 and $10,000,000.");
             }
             String description = parseDescription(valueRemainder);
+            if (valueRemainder.contains(" desc/") && description.isEmpty()) {
+                throw new MoneyBagProMaxException("Description cannot be empty when 'desc/' is provided.");
+            }
             LocalDate date = parseDate(valueRemainder);
             return new EditCommand(index, category, amount, description, date, undoRedoManager);
         } catch (NumberFormatException e) {
