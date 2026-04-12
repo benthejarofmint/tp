@@ -128,7 +128,7 @@ public class Parser {
     private Command parseAddCommand(String args) throws MoneyBagProMaxException {
         if (args.startsWith("desc/") || args.startsWith("d/") || args.startsWith("rec/")) {
             throw new MoneyBagProMaxException(
-                    "Invalid format — category/PRICE must come first. "
+                    "Invalid format - category/PRICE must come first. "
                             + "Try: add [category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]");
         }
         
@@ -255,7 +255,7 @@ public class Parser {
         try {
             return LocalDate.parse(dateToken);
         } catch (DateTimeParseException e) {
-            throw new MoneyBagProMaxException("Invalid date format — expected yyyy-MM-dd. Transaction not added.");
+            throw new MoneyBagProMaxException("Invalid date format - expected yyyy-MM-dd. Transaction not added.");
         }
     }
 
@@ -324,7 +324,7 @@ public class Parser {
         String remainder = parts[1].trim();
         if (remainder.startsWith("desc/") || remainder.startsWith("d/")) {
             throw new MoneyBagProMaxException(
-                    "Invalid format — category/PRICE must come first. "
+                    "Invalid format - category/PRICE must come first. "
                             + "Try: edit INDEX [category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]");
         }
         String[] categoryAndRest = remainder.split("/", 2);
@@ -413,7 +413,7 @@ public class Parser {
             return new FilterCommand(from, to);
 
         } catch (DateTimeParseException e) {
-            throw new MoneyBagProMaxException("Invalid date format — expected YYYY-MM-DD. "
+            throw new MoneyBagProMaxException("Invalid date format - expected YYYY-MM-DD. "
                     + "Use: filter from/YYYY-MM-DD to/YYYY-MM-DD");
         } catch (IndexOutOfBoundsException e) {
             throw new MoneyBagProMaxException("Missing date values! "
