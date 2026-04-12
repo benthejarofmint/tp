@@ -47,10 +47,10 @@ public class Ui {
                                    in their category, description or date.
                                  - Example: find lunch
                                  - Example: find 2026-03
-                5. Summary     : `summary [category]`
-                                 - Shows overall totals or specific category totals.
-                                 - Valid types: `all`, `expense`, `income`, or specific categories.
-                                 - Example: summary all
+                5. Summary     : `summary [category] [month/YYYY-MM]`
+                                 - Shows overall totals or specific category totals or by month totals
+                                 - Valid types: `all`, `expense`, `income`, or specific valid categories.
+                                 - Example: summary education month/2026-04
                 6. Sort        : `sort by/[CRITERIA]`
                                  - Sorts and displays transactions by the given criteria.
                                  - Valid criteria: `date`, `amount`, `category`
@@ -90,7 +90,7 @@ public class Ui {
                                  - Example: delete-rec 2
                 16. Generate   : `gen-rec`
                                  - Generates all due recurring transactions up to today.
-                17. Filter     : `filter [from/YYYY-MM-DD] [to/YYYY-MM-DD]`
+                17. Filter     : `filter from/YYYY-MM-DD to/YYYY-MM-DD`
                                  - Filters your transactions based on the time frame given
                 18. Exit       : `exit`
                                  - Exits the program.
