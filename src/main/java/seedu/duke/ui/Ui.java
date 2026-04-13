@@ -38,7 +38,7 @@ public class Ui {
                                  - desc/ and d/ are optional.
                                  - Date defaults to today if omitted.
                                  - Valid categories: `salary`, `freelance`, `investment`,
-                                   `business`, `gift`, `misc`
+                                   `business`, `gift`
                                  - Example: add salary/500 desc/allowance d/2026-03-01
                 3. List        : `list`
                                  - Lists all current transactions in your app.
@@ -55,7 +55,7 @@ public class Ui {
                                  - Sorts and displays transactions by the given criteria.
                                  - Valid criteria: `date`, `amount`, `category`
                                  - Example: sort by/date
-                7. Delete      : `delete [ENTRY INDEX]`
+                7. Delete      : `delete ENTRY INDEX`
                                  - Deletes a transaction using its number from the `list`.
                                  - Example: delete 3
                 8. Edit        : `edit [INDEX] [category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`
