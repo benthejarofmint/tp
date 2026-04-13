@@ -62,7 +62,6 @@ public class Parser {
 
         switch (command) {
         case "exit":
-        case "q":
             return new ExitCommand();
         case "help":
             return new HelpCommand();
@@ -128,7 +127,7 @@ public class Parser {
     private Command parseAddCommand(String args) throws MoneyBagProMaxException {
         if (args.startsWith("desc/") || args.startsWith("d/") || args.startsWith("rec/")) {
             throw new MoneyBagProMaxException(
-                    "Invalid format — category/PRICE must come first. "
+                    "Invalid format - category/PRICE must come first. "
                             + "Try: add [category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]");
         }
         
@@ -147,7 +146,10 @@ public class Parser {
                     && !CategoryManager.getInstance().isValidExpenseCategory(category)) {
                 throw new MoneyBagProMaxException("Invalid category '" + category + "'.");
             }
-            if (remainder.contains(" rec/")) {
+            String remainderForRecCheck = remainder.contains(" desc/")
+                    ? remainder.substring(0, remainder.indexOf(" desc/"))
+                    : remainder;
+            if (remainderForRecCheck.contains(" rec/")) {
                 Frequency frequency = parseFrequency(remainder);
                 String cleanRemainder = remainder.replaceFirst(" rec/\\S+", "").trim();
                 double amount = parseAmount(cleanRemainder);
@@ -237,10 +239,11 @@ public class Parser {
     /**
      * Extracts the date from the add command remainder string.
      * Returns today's date if the d/ token is absent.
-     * Shows an error message and returns today's date if the format is invalid.
+     * Throws MoneyBagProMaxException if the format is invalid — the transaction is rejected.
      *
      * @param remainder The portion of input after the first slash.
-     * @return The parsed LocalDate, or LocalDate.now() if absent or invalid.
+     * @return The parsed LocalDate, or LocalDate.now() if the d/ token is absent.
+     * @throws MoneyBagProMaxException if a d/ token is present but has an invalid date format.
      */
     private LocalDate parseDate(String remainder) throws MoneyBagProMaxException {
         if (!remainder.contains(" d/")) {
@@ -251,7 +254,7 @@ public class Parser {
         try {
             return LocalDate.parse(dateToken);
         } catch (DateTimeParseException e) {
-            throw new MoneyBagProMaxException("Invalid date format — expected yyyy-MM-dd. Transaction not added.");
+            throw new MoneyBagProMaxException("Invalid date format - expected yyyy-MM-dd. Transaction not added.");
         }
     }
 
@@ -283,6 +286,7 @@ public class Parser {
         }
         String[] parts = args.split(" ", 2);
         String action = parts[0].trim().toLowerCase();
+
         if (action.equals("set")) {
             if (parts.length < 2) {
                 throw new MoneyBagProMaxException("Usage: budget set AMOUNT");
@@ -292,14 +296,19 @@ public class Parser {
                 if (amount <= 0) {
                     throw new MoneyBagProMaxException("Budget must be greater than 0.");
                 }
+                if (amount > 10000000) {
+                    throw new MoneyBagProMaxException("Budget must not exceed 10000000.");
+                }
                 return new BudgetCommand("set", amount);
             } catch (NumberFormatException e) {
                 throw new MoneyBagProMaxException("Invalid budget amount.");
             }
         }
+
         if (action.equals("status")) {
             return new BudgetCommand("status", 0);
         }
+
         throw new MoneyBagProMaxException("Unknown budget command.");
     }
 
@@ -320,7 +329,7 @@ public class Parser {
         String remainder = parts[1].trim();
         if (remainder.startsWith("desc/") || remainder.startsWith("d/")) {
             throw new MoneyBagProMaxException(
-                    "Invalid format — category/PRICE must come first. "
+                    "Invalid format - category/PRICE must come first. "
                             + "Try: edit INDEX [category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]");
         }
         String[] categoryAndRest = remainder.split("/", 2);
@@ -409,7 +418,7 @@ public class Parser {
             return new FilterCommand(from, to);
 
         } catch (DateTimeParseException e) {
-            throw new MoneyBagProMaxException("Invalid date format — expected YYYY-MM-DD. "
+            throw new MoneyBagProMaxException("Invalid date format - expected YYYY-MM-DD. "
                     + "Use: filter from/YYYY-MM-DD to/YYYY-MM-DD");
         } catch (IndexOutOfBoundsException e) {
             throw new MoneyBagProMaxException("Missing date values! "
@@ -446,12 +455,22 @@ public class Parser {
         if (type == null || type.isEmpty()) {
             type = "all";
         }
+
+        if (type.equals("month") && month == null) {
+            throw new MoneyBagProMaxException("Did you mean: summary month/YYYY-MM? "
+                    + "Use a slash to specify the month (e.g., summary month/2026-04).");
+        }
+
+        if (month != null && type.equals("all")) {
+            throw new MoneyBagProMaxException("'all` and 'month/' cannot be combined. "
+                    + "Use either: summary all OR summary month/YYYY-MM");
+        }
         return new SummaryCommand(type, month);
     }
 
     private Command parseCategoryCommand(String args) throws MoneyBagProMaxException {
         if (args.equals("list")) {
-            return new CategoryCommand("list", "");
+            return new CategoryCommand("list", "", recurringList);
         }
         if (args.startsWith("add/")) {
             String name = args.substring("add/".length()).trim().toLowerCase();
@@ -462,7 +481,7 @@ public class Parser {
                 throw new MoneyBagProMaxException(
                         "Category name must only contain letters, digits, hyphens, or underscores.");
             }
-            return new CategoryCommand("add", name);
+            return new CategoryCommand("add", name, recurringList);
         }
         if (args.startsWith("remove/")) {
             String name = args.substring("remove/".length()).trim().toLowerCase();
@@ -473,7 +492,7 @@ public class Parser {
                 throw new MoneyBagProMaxException(
                         "Category name must only contain letters, digits, hyphens, or underscores.");
             }
-            return new CategoryCommand("remove", name);
+            return new CategoryCommand("remove", name, recurringList);
         }
         throw new MoneyBagProMaxException(
                 "Invalid category command. Usage:\n"

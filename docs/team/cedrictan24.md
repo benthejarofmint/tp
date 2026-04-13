@@ -2,7 +2,7 @@
 
 ## Project: MoneyBagProMax
 
-MoneyBagProMax is a command-line personal finance management application designed to help users track income and expenses, manage budgets, and gain insights into spending habits through financial statistics. The user interacts with it using a CLI, and the application is written in Java.
+MoneyBagProMax is a command-line personal finance management application that helps users track income and expenses, manage budgets, and gain insights into spending habits through financial statistics. The user interacts with it using a CLI, and the application is written in Java.
 
 Given below are my contributions to the project.
 
@@ -11,80 +11,97 @@ Given below are my contributions to the project.
 ## Summary of Contributions
 
 ### New Feature: Budget Feature
+
 What it does:  
-Allows the user to set a monthly budget and view the current budget status, including total expenses for the month, remaining budget, and percentage of budget used.
+Allows users to set a monthly budget and view budget status, including total expenses, remaining budget, and percentage used.
 
 Justification:  
-This feature improves the product significantly because users can monitor their monthly spending and avoid exceeding their budget.
+Improves usability by helping users monitor spending and avoid exceeding their budget.
 
 Highlights:  
-This feature required filtering transactions by month using transaction dates and integrating the budget calculation with the statistics feature. The implementation required changes to the TransactionList and StatsCommand to ensure budget usage is calculated correctly.
+Required filtering transactions by month and integrating budget calculations with transaction data.
 
 ---
 
 ### New Feature: Statistics Feature
+
 What it does:  
-Displays financial statistics such as highest expense, lowest expense, highest income, most frequent category, average spending per category, spending trend, and budget usage.
+Displays financial statistics such as total income/expenses, highest/lowest transactions, most frequent category, average spending per category, spending trend, and budget usage.
 
 Justification:  
-This feature provides users with useful insights into their spending habits, allowing them to better manage their finances.
+Provides users with meaningful insights into their financial behaviour.
 
 Highlights:  
-The implementation required the use of data structures such as HashMap to calculate category frequency and averages. It also required refactoring existing code to avoid duplication when calculating highest and lowest transactions.
+Used data structures such as HashMap for aggregation and refactored logic to reduce duplication. Implemented a month-based spending trend feature to ensure meaningful time-based analysis.
 
 ---
 
-### Enhancements Implemented:
-- Implemented the List Command to display all transactions.
-- Implemented the Delete Command to remove transactions by index.
-- Refactored duplicated code in TransactionList by introducing a helper method to compute highest and lowest transactions.
-- Added defensive programming using assertions and logging.
-- Wrote JUnit tests for multiple commands including DeleteCommand, ListCommand, BudgetCommand, StatsCommand, HelpCommand, and ExitCommand.
+### Enhancements implemented
+
+- Budget Feature
+  - Implemented budget set and budget status
+  - Added budget tracking (remaining amount, percentage used)
+  - Implemented persistence using [BUDGET] format
+  - Added validation for zero, negative, and excessively large values
+
+- Statistics Feature
+  - Implemented stats command for financial analysis
+  - Designed spending trend using month-based aggregation
+  - Ensured correctness by returning "Not enough data" when insufficient data is present
+
+- Core Command Improvements
+  - Enhanced delete command to handle empty lists and invalid indices
+  - Improved error handling to prevent runtime exceptions
 
 ---
 
 ### Code Contributed
+
 [RepoSense link](https://nus-cs2113-ay2526-s2.github.io/tp-dashboard/?search=cedrictan24&breakdown=true&sort=groupTitle%20dsc&sortWithin=title&since=2026-02-20T00%3A00%3A00&timeframe=commit&mergegroup=&groupSelect=groupByRepos&checkedFileTypes=docs~functional-code~test-code~other&filteredFileName=)
 
 ---
 
-### Contributions to the User Guide
-I contributed the following sections to the User Guide:
-- List command
-- Delete command
-- Budget command
-- Stats command
+### Contributions to the User Guide (UG)
 
-Each section includes the command format, examples, and explanations.
+- Documented:
+  - list, delete, budget, and stats commands
+- Included command formats, examples, and expected outputs
+- Ensured consistency between documentation and implementation
 
----
+<div style="page-break-before: always;"></div>
 
-### Contributions to the Developer Guide
-I contributed the following sections to the Developer Guide:
-- Implementation of the Budget feature
-- Implementation of the Statistics feature
-- Refactoring of TransactionList
-- Defensive programming (assertions and logging)
-- Sequence diagrams of the Budget feature
-- Sequence diagrams of the Statistics feature
+### Contributions to the Developer Guide (DG)
 
----
-
-### Contributions to Team-Based Tasks
-- Reviewed pull requests and provided feedback on code quality and documentation.
-- Resolved merge conflicts between branches.
-- Fixed checkstyle issues and improved code quality.
-- Performed manual testing and text-ui testing.
+- Added implementation details for Budget and Statistics features
+- Documented spending trend logic and design considerations
+- Updated documentation for core commands:
+  - delete command (index validation and empty list handling)
+  - list command (interaction with `TransactionList`)
+- Created and refined UML diagrams:
+  - sequence diagrams for command execution flow
+  - class diagrams for Budget and Statistics features
 
 ---
 
-### Review / Mentoring Contributions
-- Reviewed teammates’ pull requests and suggested improvements.
+### Contributions to team-based tasks
+
+- Integrated features into the main codebase
+- Maintained consistency in validation and error handling
+
+---
+
+### Review / mentoring contributions
+
+- Reviewed teammates’ PRs and provided feedback on correctness and code quality
+
+---
+
+### Contributions beyond the project team
+
+- Reported multiple bugs during PE-D with clear reproduction steps and severity classification
 
 ---
 
 ### Tools Used
-- Gradle for build automation
-- JUnit for unit testing
-- Checkstyle for code quality
-- GitHub for version control and pull request management
+
+- Gradle, JUnit, Checkstyle, GitHub

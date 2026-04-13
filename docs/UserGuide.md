@@ -8,8 +8,8 @@ manage budgets, and gain insights into your spending habits via a simple applica
 ## Table of Contents
 - [Quick Start](#quick-start)
 - [Features](#features)
-    - [Adding an Expense: `add [expense-category]`](#adding-an-expense-add-expense-category)
-    - [Adding an Income: `add [income-category]`](#adding-an-income-add-income-category)
+    - [Adding an Expense: `add EXPENSE_CATEGORY`](#adding-an-expense-add-expense_category)
+    - [Adding an Income: `add INCOME_CATEGORY`](#adding-an-income-add-income_category)
     - [Listing all Transactions: `list`](#listing-all-transactions-list)
     - [Finding a Transaction: `find`](#finding-a-transaction-find)
     - [Viewing a Summary: `summary`](#viewing-a-summary-summary)
@@ -28,6 +28,7 @@ manage budgets, and gain insights into your spending habits via a simple applica
     - [Filtering Transactions: `filter`](#filtering-transactions-filter)
     - [Exporting to CSV: `export-csv`](#exporting-to-csv-export-csv)
     - [Exporting Data File: `export-data`](#exporting-data-file-export-data)
+    - [Viewing the Help list: `help`](#viewing-the-help-list-help)
     - [Exiting the Application: `exit`](#exiting-the-application-exit)
 - [Command Summary](#command-summary)
 
@@ -55,7 +56,7 @@ respective system [here](https://www.oracle.com/java/technologies/javase/jdk17-a
 
 ## Features
 
-> [!NOTE]
+> [NOTE]
 > ‼️ **Notes about the command format**:
 > - Words in **UPPER_CASE** are placeholders to be supplied by you, the user.
 > - For example: in `delete ENTRY_INDEX`, **ENTRY_INDEX** is a placeholder that should be replaced with the actual index number.
@@ -63,10 +64,11 @@ respective system [here](https://www.oracle.com/java/technologies/javase/jdk17-a
 > - **Dates** must follow the `YYYY-MM-DD` format (e.g. `2026-03-01`).
 > - **Prices** must be a positive number (e.g. `10` or `10.50`).
 > - If a date is omitted, it defaults to today's date.
+> - Command names are case-insensitive. (e.g ADD food/10 will be accepted by the program).
 
 ---
 
-### Adding an Expense: `add [expense-category]`
+### Adding an Expense: `add EXPENSE_CATEGORY`
 Adds an expense by the given category, amount, optional description and optional date.
 
 **Format**: `add EXPENSE_CATEGORY/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`
@@ -80,27 +82,27 @@ For managing custom expense categories, see [Managing Custom Categories](#managi
 - `add transport/3.50 desc/bus ride` Adds a transport expense of $3.50 with the description *"bus ride"*, dated today.
 - `add medical/25 desc/checkup d/2026-03-01` Adds a medical expense of $25.00 with the description *"checkup"*, dated 1st March 2026.
 
-> [!NOTE]
+> [NOTE]
 > If the date is omitted, it defaults to today's date. If the description is omitted, the transaction is recorded without one.
 
-> [!NOTE]
+> [NOTE]
 > The expense category input is case-insensitive.
 
 ---
 
-### Adding an Income: `add [income-category]`
+### Adding an Income: `add INCOME_CATEGORY`
 Adds an income transaction to your list.
 
-**Format**: `add [income-category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`
+**Format**: `add INCOME_CATEGORY/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`
 **Valid income categories**: `salary`, `freelance`, `investment`, `business`, `gift`
 
 **Examples**:
 - `add salary/500 desc/allowance d/2026-03-01` Adds a salary income of $500.00 described as *"allowance"* on 1st March 2026.
 - `add freelance/150` Adds a freelance income of $150.00 with today's date and no description.
 
-> [!NOTE] If the date is omitted, it defaults to today's date. If the description is omitted, the transaction is recorded without one.
+> [NOTE] If the date is omitted, it defaults to today's date. If the description is omitted, the transaction is recorded without one.
 
-> [!NOTE]
+> [NOTE]
 > The income category input is case-insensitive.
 
 ---
@@ -113,7 +115,7 @@ Displays all recorded transactions in a numbered list.
 **Examples**:
 - `list` Displays all transactions currently stored in the application.
 
-> [!NOTE]
+> [NOTE]
 > If there are no transactions recorded, the application will show an empty list message instead.
 ---
 
@@ -126,8 +128,10 @@ Searches for transactions that contain a specific keyword in their category, des
 - `find lunch` Searches for all transactions containing the word *"lunch"*.
 - `find 2026-03` Searches for all transactions from March 2026.
 
-> [!NOTE]
-> If no transactions match your keyword, an empty result will be returned.
+> [NOTE]
+> 1. If no transactions match your keyword, an empty result will be returned.
+> 2. In the results returned from the find command, the numbering of the items are based on the **actual** numbering 
+in the **original list index**.
 
 ---
 
@@ -139,13 +143,13 @@ Displays overall totals or specific category totals for your transactions.
 **Valid types**: `all`, `expense`, `income`, or any specific category (e.g. `food`, `salary`)
 
 **Examples**:
-- `summary all` Shows the total income, total expenses, and net balance.
+- `summary` or `summary all` Shows the total income, total expenses, and net balance.
 - `summary expense` Shows the total amount spent across all expense categories.
 - `summary food` Shows the total amount spent specifically on food.
 - `summary month/2026-03` Shows the total income, expenses, and net balance for that particular month.
 - `summary food month/2026-04` Shows you the total expense for 2026-04.
 
-> [!NOTE]
+> [NOTE]
 > The input category is case-insensitive.
 ---
 
@@ -154,7 +158,7 @@ Displays transactions sorted by the specified criterion. The underlying list ord
 
 **Format**: `sort by/CRITERIA`
 
-**Valid criteria:**
+**Valid criteria (case-insensitive):**
 - `date` — ascending (earliest first)
 - `amount` — descending (largest first)
 - `category` — alphabetical A–Z (case-insensitive)
@@ -164,7 +168,7 @@ Displays transactions sorted by the specified criterion. The underlying list ord
 - `sort by/amount` — shows all transactions from highest to lowest amount.
 - `sort by/category` — shows all transactions sorted alphabetically by category.
 
-> [!NOTE]
+> [NOTE]
 > Sort does not change the indices used by `delete` and `edit`. Use `list` to see the original insertion order.
 
 ---
@@ -177,7 +181,7 @@ Deletes the transaction at the specified index in the displayed list.
 **Examples**:
 - `delete 3` Deletes the 3rd transaction in the list.
 
-> [!NOTE]
+> [NOTE]
 > The index must be a valid positive integer corresponding to an existing transaction.
 ---
 
@@ -191,7 +195,7 @@ All fields must be provided — the edit replaces the entire transaction, not in
 - `edit 2 food/15` Replaces the 2nd transaction with a food expense of $15.00, dated today.
 - `edit 1 salary/3000 desc/march pay d/2026-03-01` Replaces the 1st transaction with a salary income of $3000.00 with the description *"march pay"*, dated 1st March 2026.
 
-> [!NOTE]
+> [NOTE]
 > Use `list` first to confirm the index of the transaction you want to edit. The edit can be reversed with `undo`.
 
 ---
@@ -204,7 +208,7 @@ Reverses the last mutating command (`add`, `delete`, or `edit`). Can be called r
 **Examples**:
 - `undo` — reverses the last add, delete, or edit operation.
 
-> [!NOTE]
+> [NOTE]
 > Undo history is reset when you exit the application. Only `add`, `delete`, and `edit` are undoable.
 
 ---
@@ -217,7 +221,7 @@ Re-applies the last undone action. Only available immediately after an `undo`.
 **Examples**:
 - `redo` — re-applies the last undone operation.
 
-> [!NOTE]
+> [NOTE]
 > Performing any new mutating command (`add`/`delete`/`edit`) after an `undo` clears the redo history.
 
 ---
@@ -233,7 +237,7 @@ Allows you to set a monthly budget and check your current budget usage.
 - `budget set 1000` Sets your monthly budget to $1000.
 - `budget status` Displays the current monthly budget, total spent for the month, remaining budget, and percentage used.
 
-> [!NOTE]
+> [NOTE]
 > Budget usage is calculated using expense transactions from the current month only.
 ---
 
@@ -256,7 +260,7 @@ The statistics include:
 **Examples**:
 - `stats` Displays the full statistics summary for all recorded transactions.
 
-> [!NOTE]
+> [NOTE]
 > General statistics are based on all recorded transactions, while budget usage is based on the current month's expenses.
 ---
 ### Managing Custom Categories: `category`
@@ -278,7 +282,7 @@ Custom categories are saved automatically and available across sessions.
 - `category remove/groceries` — deletes the custom category "groceries"
 - `category list` — lists all available expense categories, built-in and custom
 
-> [!NOTE]
+> [NOTE]
 > Built-in categories (`food`, `transport`, `utilities`, `education`, `rent`, `medical`, `misc`) cannot be removed.
 > A category cannot be removed if it is currently used by an existing transaction — delete those transactions first.
 > Once a custom category is added, it can be used with `add` and `edit` just like a built-in category.
@@ -292,7 +296,7 @@ Creates a recurring transaction template. MoneyBagProMax will automatically gene
 - `FREQUENCY` must be one of: `daily`, `weekly`, `monthly` (case-insensitive)
 - `d/YYYY-MM-DD` sets the start date; defaults to today if omitted
 - The category determines whether the entry is an expense or income (same valid categories as `add`)
-> [!NOTE]
+> [NOTE]
 > For valid expense and income categories, see [Adding an Expense](#adding-an-expense-add-expense-category) and [Adding an Income](#adding-an-income-add-income-category).
 
 **Examples**:
@@ -308,7 +312,7 @@ Displays all stored recurring transaction templates with their index, frequency,
 **Examples**:
 - `list-rec` — Lists all recurring transaction templates currently stored.
 
-> [!NOTE]
+> [NOTE]
 > If no recurring templates exist, the application will show an empty-list message.
 
 ---
@@ -333,7 +337,7 @@ Generates all pending transaction entries for every recurring template, up to to
 **Examples**:
 - `gen-rec` — Generates all due recurring transactions for all templates.
 
-> [!NOTE]
+> [NOTE]
 > If all templates are up-to-date, no new transactions are added.
 
 ---
@@ -346,8 +350,9 @@ Filters and displays only the transactions that fall within a specified date ran
 **Examples**:
 - `filter from/2026-01-01 to/2026-03-31` Displays all transactions from 1st January 2026 to 31st March 2026.
 
-> [!NOTE]
-> Both `from/` and `to/` are compulsory.
+> [NOTE]
+> 1. Both `from/` and `to/` are compulsory.
+> 2. The `from/` date **cannot be** after the `to/` date. The application will throw an error.
 
 ---
 
@@ -359,10 +364,16 @@ Exports all transactions to a `.csv` file for use in external tools like Microso
 **CSV columns**: `date`, `type`, `category`, `description`, `amount`
 
 **Examples**:
-- `export-csv ~/transactions.csv` Exports all transactions to `transactions.csv` in your home directory.
-- `export-csv reports/june.csv` Exports to a `reports/` subfolder.
+- `export-csv transactions.csv` Exports all transactions to `transactions.csv` in the current directory.
+- `export-csv reports/june.csv` Exports to a `reports/` subfolder (relative to current directory).
 
-> [!NOTE]
+> [NOTE]
+> Use relative paths (e.g. `transactions.csv`) or absolute paths specific to your OS.
+> Tilde (`~/`) expansion is not supported — use the full path instead.
+> - **Windows**: `export-csv C:\Users\YourName\transactions.csv`
+> - **macOS/Linux**: `export-csv /Users/YourName/transactions.csv`
+
+> [NOTE]
 > This is for external analysis only — the CSV cannot be reimported into MoneyBagProMax. For transferring data between devices, use `export-data` instead.
 
 ---
@@ -373,10 +384,27 @@ Copies the internal data file to a location of your choice. Useful for backing u
 **Format**: `export-data FILEPATH`
 
 **Examples**:
-- `export-data ~/backup/transactions.txt` Copies the data file to a backup folder.
+- `export-data backup/transactions.txt` Copies the data file to a `backup/` subfolder in the current directory.
 
-> [!NOTE]
+> [NOTE]
+> Use relative paths or absolute paths specific to your OS.
+> Tilde (`~/`) expansion is not supported — use the full path instead.
+> - **Windows**: `export-data C:\Users\YourName\backup\transactions.txt`
+> - **macOS/Linux**: `export-data /Users/YourName/backup/transactions.txt`
+
+> [NOTE]
 > The exported file can be used to restore your data on another device. See the [FAQ](#faq) for transfer instructions.
+
+---
+
+### Viewing the Help List: `help`
+Shows the various commands that are available to be used in the MoneyBagProMax application.
+Will also show the format of the various commands.
+
+**Format**: `help`
+
+**Examples**:
+- `help` Shows all available commands
 
 ---
 
@@ -394,34 +422,62 @@ Exits the MoneyBagProMax application.
 
 **Q**: How do I transfer my data to another computer?
 
-**A**: Install the MoneyBagProMax application on the new computer and run it once to generate the default data file.
-Then, overwrite the generated data/transactions.txt file with the one from your previous computer to transfer all your information.
+**A**: Install the MoneyBagProMax application on the new computer and run it once to generate the default data files.
+Then, copy all three data files from your previous computer into the `data/` folder on the new one, overwriting the generated files:
+- `data/transactions.txt` — your recorded income and expense entries
+- `data/categories.txt` — your custom expense categories
+- `data/recurring.txt` — your recurring transaction templates
+> [NOTE]
+> All three files must be transferred together. Copying only `transactions.txt` will cause custom categories and recurring templates to be lost on the new device.
 
 ---
 
 ## Editing the Data File
 
-MoneyBagProMax automatically saves your transaction data in three text files, both located in the `./data/` directory relative to where you run the program:
+MoneyBagProMax automatically saves your transaction data in three text files, all located in the `./data/` directory relative to where you run the program:
 - `transactions.txt` — stores all recorded income and expense entries.
 - `categories.txt` — stores your custom expense categories (created with `category add/NAME`).
 - `recurring.txt` — stores your recurring transaction templates (created with `add ... rec/FREQUENCY`).
 
-> ⚠️**Caution:** Be cautious when editing either file directly, as there are guards against file corruption and improper formatting. Failure to pass these checks may cause errors or data loss when the application is next launched.
+> ⚠️ **Caution:** Be cautious when editing these files directly, as there are guards against file corruption and improper formatting. Failure to pass these checks may cause errors or data loss when the application is next launched.
 
+### File Formats
+
+**transactions.txt** — each line follows the format:
+`[TXN] | type=TYPE | category=CATEGORY | amount=AMOUNT | description=DESCRIPTION | date=YYYY-MM-DD`
+
+The budget is stored as: `[BUDGET] | amount=AMOUNT`
+
+Valid values: `type` must be `income` or `expense`; `amount` must be a positive number; `date` must be `YYYY-MM-DD`; `description` may be empty.
+
+Example lines:
+- `[BUDGET] | amount=1000.0`
+- `[TXN] | type=expense | category=food | amount=12.5 | description=lunch | date=2026-03-25`
+- `[TXN] | type=income | category=salary | amount=3000.0 | description=march pay | date=2026-03-01`
+
+**recurring.txt** — each line follows the format:
+`[REC] | category=CATEGORY | amount=AMOUNT | description=DESCRIPTION | frequency=FREQUENCY | startDate=YYYY-MM-DD | lastGeneratedDate=YYYY-MM-DD`
+
+Valid values: `frequency` must be `DAILY`, `WEEKLY`, or `MONTHLY`; use `null` for `lastGeneratedDate` if the template has never been generated.
+
+**categories.txt** — each custom category is stored as a plain lowercase string on its own line, e.g. `groceries` or `dining-out`.
+
+> [NOTE]
+> Lines that cannot be parsed are skipped and a warning is shown on the next launch. Lines not beginning with `[TXN]`, `[BUDGET]`, or `[REC]` are ignored.
 ---
 
 ## Command Summary
 
 | Action                 | Format                                                                 | Example                                      |
 |------------------------|------------------------------------------------------------------------|----------------------------------------------|
-| **Add Expense**        | `add [expense-category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`       | `add food/10 desc/lunch d/2025-03-01`        |
-| **Add Income**         | `add [income-category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`        | `add salary/500 desc/allowance d/2026-03-01` |
+| **Add Expense**        | `add EXPENSE_CATEGORY/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`         | `add food/10 desc/lunch d/2026-03-01`        |
+| **Add Income**         | `add add INCOME_CATEGORY/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`      | `add salary/500 desc/allowance d/2026-03-01` |
 | **List**               | `list`                                                                 | —                                            |
 | **Find**               | `find KEYWORD`                                                         | `find lunch`                                 |
 | **Summary**            | `summary [TYPE] [month/YYYY-MM]`                                       | `summary all`                                |
 | **Sort**               | `sort by/CRITERIA`                                                     | `sort by/date`                               |
 | **Delete**             | `delete ENTRY_INDEX`                                                   | `delete 3`                                   |
-| **Edit**               | `edit INDEX [category]/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`        | `edit 3 food/20 desc/dinner d/2026-03-20`    |
+| **Edit**               | `edit ENTRY_INDEX CATEGORY/PRICE [desc/DESCRIPTION] [d/YYYY-MM-DD]`    | `edit 3 food/20 desc/dinner d/2026-03-20`    |
 | **Undo**               | `undo`                                                                 | —                                            |
 | **Redo**               | `redo`                                                                 | —                                            |
 | **Budget Set**         | `budget set AMOUNT`                                                    | `budget set 1000`                            |
@@ -437,4 +493,5 @@ MoneyBagProMax automatically saves your transaction data in three text files, bo
 | **Filter**             | `filter from/YYYY-MM-DD to/YYYY-MM-DD`                                 | `filter from/2026-01-01 to/2026-03-31`       |
 | **Export CSV**         | `export-csv FILEPATH`                                                  | `export-csv ~/transactions.csv`              |
 | **Export Data**        | `export-data FILEPATH`                                                 | `export-data ~/backup/transactions.txt`      |
+| **Help**               | `help`                                                                 | —                                            |
 | **Exit**               | `exit`                                                                 | —                                            |
