@@ -34,18 +34,12 @@ be deleted.
 ### Enhancements and Bug Fixes
 - Fixed `EditCommand` rejecting custom categories by replacing the hardcoded
   `Expense.VALID_CATEGORIES` check with `CategoryManager.isValidExpenseCategory()`.
-- Fixed `misc` always creating an Income transaction by removing it from
-  `Income.VALID_CATEGORIES`.
 - Fixed case-sensitivity inconsistency: category is normalised to lowercase before
   being passed to `Income`/`Expense` constructors in both `AddCommand` and `EditCommand`.
 - Fixed wrong validation order: category is now validated before amount and
   frequency parsing in `parseAddCommand`.
 - Strengthened amount validation to reject `Infinity`, sub-cent values, and amounts above
   $10,000,000 in both `parseAddCommand` and `parseEditCommand`.
-- Fixed misleading "Using today's date" error message and silent empty `desc/`
-  acceptance in the parser.
-- Fixed "Invalid price" error caused by `d/` appearing before `desc/` by changing
-  `else if` to `if` in `parseAmount`.
 - Added parameter-order detection in `parseAddCommand` and `parseEditCommand`.
 - Added assertions and Javadoc to `Expense`, `EditCommand`, and `CategoryManager`.
 - Wrote JUnit tests for `EditCommand`, `CategoryCommand`, `CategoryManager`, `Expense`,
@@ -53,6 +47,22 @@ be deleted.
 
 ### Code Contributed
 [RepoSense link](https://nus-cs2113-ay2526-s2.github.io/tp-dashboard/?search=yc-zzz&breakdown=true&sort=groupTitle%20dsc&sortWithin=title&since=2026-02-20T00%3A00%3A00&timeframe=commit&mergegroup=&groupSelect=groupByRepos&checkedFileTypes=docs~functional-code~test-code~other&filteredFileName=)
+
+### Contributions to Team-Based Tasks
+- Reviewed pull requests and provided feedback on correctness and code style.
+- Added assertions and logging across multiple classes as part of a defensive programming pass.
+- Managed releases v1.0–v2.0 (2 releases) on GitHub.
+- Performed manual testing of the add, edit and category commands across valid and invalid inputs.
+
+### Beyond-Team Contributions
+- Reported 10 bugs during PE-D for another team's product.
+
+### Tools Used
+- Gradle for build automation
+- JUnit for unit testing
+- Checkstyle for code quality
+- GitHub for version control and pull request management
+
 
 ### Contributions to the User Guide
 - Edit command section (format, optional parameters, examples).
@@ -65,18 +75,3 @@ be deleted.
   future improvements, `EditSequenceDiagram.puml` covering three execution paths).
 - Category Management section (singleton design, persistence strategy, in-use guard,
   integration with existing commands).
-
-### Contributions to Team-Based Tasks
-- Reviewed pull requests and provided feedback on correctness and code style.
-- Added assertions and logging across multiple classes as part of a defensive programming pass.
-- Managed releases v1.0–v2.0 (2 releases) on GitHub.
-- Performed manual testing of the edit and category commands across valid and invalid inputs.
-
-### Beyond-Team Contributions
-- Reported 10 bugs during PE-D for another team's product.
-
-### Tools Used
-- Gradle for build automation
-- JUnit for unit testing
-- Checkstyle for code quality
-- GitHub for version control and pull request management
