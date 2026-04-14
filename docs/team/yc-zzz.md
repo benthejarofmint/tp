@@ -52,7 +52,7 @@ be deleted.
 - Reviewed pull requests and provided feedback on correctness and code style.
 - Added assertions and logging across multiple classes as part of a defensive programming pass.
 - Managed releases v1.0–v2.0 (2 releases) on GitHub.
-- Performed manual testing of teh add, edit and category commands across valid and invalid inputs.
+- Performed manual testing of the add, edit and category commands across valid and invalid inputs.
 
 ### Beyond-Team Contributions
 - Reported 10 bugs during PE-D for another team's product.
